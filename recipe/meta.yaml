@@ -4,7 +4,6 @@
 {% set name = "xorg-" ~ xorg_name %}
 {% set version = "1.2.4" %}
 {% set sha256 = "75cd2859f38e207a090cac980d76bc71e9da99d48d09703584e00585abc920fe" %}
-{% set am_version = "1.15" %} # keep synchronized with build.sh
 
 package:
   name: {{ name|lower }}
@@ -43,11 +42,14 @@ test:
     {% set lib_idents = [ "Xss" ] %}
     {% for lib_ident in lib_idents %}
     - test -f $PREFIX/lib/lib{{ lib_ident }}.dylib  # [osx]
-    - test -f $PREFIX/lib/lib{{ lib_ident }}.so     # [linux]
+    - test -f $PREFIX/lib/lib{{ lib_ident }}.so  # [linux]
+    - if not exist %LIBRARY_LIB%/lib{{ lib_ident }}.a exit /b 1  # [win]
     {% endfor %}
 
 about:
   home: https://www.x.org/
+  dev_url: https://gitlab.freedesktop.org/xorg/lib/libxscrnsaver
+  doc_url: https://gitlab.freedesktop.org/xorg/lib/libxscrnsaver
   license: MIT
   license_family: MIT
   license_file: COPYING
