@@ -4,7 +4,6 @@
 {% set name = "xorg-" ~ xorg_name %}
 {% set version = "1.2.4" %}
 {% set sha256 = "75cd2859f38e207a090cac980d76bc71e9da99d48d09703584e00585abc920fe" %}
-{% set am_version = "1.16" %} # keep synchronized with build.sh
 
 package:
   name: {{ name|lower }}
@@ -16,6 +15,8 @@ source:
 
 build:
   number: 0
+  # xorg-libxdmcp, libxcb, libx11 aren't available on Windows because their dependencies clash with m2/msys2 and mingw64/ucrt64 toolchains.
+  skip: true  # [win]
   run_exports:
     - {{ pin_subpackage(name|lower) }}
 
@@ -31,9 +32,7 @@ requirements:
     - make                         # [unix]
     - m2-make                      # [win]
     - {{ compiler("c") }}          # [unix]
-    - {{ stdlib("c") }}            # [unix]
     - {{ compiler("m2w64_c") }}    # [win]
-    - {{ stdlib("m2w64_c") }}      # [win]
   host:
     - xorg-xorgproto
     - xorg-libx11
@@ -46,16 +45,17 @@ test:
     {% for lib_ident in lib_idents %}
     - test -f $PREFIX/lib/lib{{ lib_ident }}.dylib  # [osx]
     - test -f $PREFIX/lib/lib{{ lib_ident }}.so  # [linux]
-    - if not exist %PREFIX%/Library/lib/lib{{ lib_ident }}.dll.a exit /b 1  # [win]
-    - if not exist %PREFIX%/Library/bin/msys-{{ lib_ident }}-*.dll exit /b 1  # [win]
+    - if not exist %LIBRARY_LIB%/lib{{ lib_ident }}.a exit /b 1  # [win]
     {% endfor %}
 
 about:
   home: https://www.x.org/
+  dev_url: https://gitlab.freedesktop.org/xorg/lib/libxscrnsaver
+  doc_url: https://gitlab.freedesktop.org/xorg/lib/libxscrnsaver
   license: MIT
   license_family: MIT
   license_file: COPYING
-  summary: 'The X.org X11 Xlib-based X11 Screen Saver extension client library'
+  summary: The X.org X11 Xlib-based X11 Screen Saver extension client library
 
 extra:
   recipe-maintainers:
