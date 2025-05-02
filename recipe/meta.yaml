@@ -55,7 +55,7 @@ about:
   license: MIT
   license_family: MIT
   license_file: COPYING
-  summary: 'The X.org X11 Xlib-based X11 Screen Saver extension client library'
+  summary: The X.org X11 Xlib-based X11 Screen Saver extension client library
 
 extra:
   recipe-maintainers:
