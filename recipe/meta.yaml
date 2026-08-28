@@ -1,5 +1,4 @@
-{% set xorg_name = "libXScrnSaver" %}
-{% set name = "xorg-" ~ xorg_name %}
+{% set name = "xorg-libXScrnSaver" %}
 {% set version = "1.2.5" %}
 
 package:
@@ -7,7 +6,7 @@ package:
   version: {{ version }}
 
 source:
-  url: https://www.x.org/releases/individual/lib/{{ xorg_name }}-{{ version }}.tar.xz
+  url: https://www.x.org/releases/individual/lib/{{ name.split('-')[1] }}-{{ version }}.tar.xz
   sha256: 5057365f847253e0e275871441e10ff7846c8322a5d88e1e187d326de1cd8d00
 
 build:
@@ -20,23 +19,20 @@ build:
 requirements:
   build:
     - {{ stdlib('c') }}
-    - {{ compiler("c") }}
+    - {{ compiler('c') }}
     - pkg-config
     - gnuconfig
     - make
   host:
-    - xorg-xorgproto
-    - xorg-libx11
-    - xorg-libxext
-    - xorg-util-macros
+    - xorg-xorgproto {{ xorg_xorgproto }}
+    - xorg-libx11 {{ xorg_libx11 }}
+    - xorg-libxext {{ xorg_libxext }}
+    - xorg-util-macros ==1.20.2
 
 test:
   commands:
-    {% set lib_idents = [ "Xss" ] %}
-    {% for lib_ident in lib_idents %}
-    - test -f $PREFIX/lib/lib{{ lib_ident }}.dylib  # [osx]
-    - test -f $PREFIX/lib/lib{{ lib_ident }}.so  # [linux]
-    {% endfor %}
+    - test -f $PREFIX/lib/libXss.dylib  # [osx]
+    - test -f $PREFIX/lib/libXss.so     # [linux]
 
 about:
   home: https://www.x.org/
